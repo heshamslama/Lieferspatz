@@ -24,36 +24,46 @@
 
     h1 {
       text-align: center;
-      color: #001050;
+      color: #aa2c2c;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
     }
 
     label {
-      font-size: 16px;
-      margin-bottom: 5px;
       display: block;
+      margin-bottom: 5px;
+      color: #333;
     }
 
-    input[type="email"], input[type="password"] {
+    input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
 
     button {
-      background-color: #001050;
-      color: white;
-      font-size: 16px;
-      padding: 12px;
       width: 100%;
+      padding: 10px;
+      background-color: #aa2c2c;
+      color: white;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
-      border-radius: 5px;
     }
 
     button:hover {
-      background-color: #001050;
+      background-color: #aa2c2c;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
     }
 
     .footer {
@@ -63,23 +73,59 @@
   </style>
 </head>
 <body>
-
-<div class="container">
-  <h1>Login</h1>
-  <form action="/login" method="post">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-
-    <button type="submit">Login</button>
-  </form>
-
-  <div class="footer">
-    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      
+      <button type="submit">Login</button>
+      <div id="errorMessage" class="error-message"></div>
+    </form>
+    
+    <div class="footer">
+      <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    </div>
   </div>
-</div>
 
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('errorMessage');
+      
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          window.location.href = data.redirect;
+        } else {
+          errorMessage.textContent = data.message;
+          errorMessage.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        errorMessage.textContent = 'An error occurred during login.';
+        errorMessage.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>

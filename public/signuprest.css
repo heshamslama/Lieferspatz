@@ -1,0 +1,160 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f8fa; /* Light background */
+    text-align: center;
+}
+
+h1 {
+    font-size: 32px;
+    color: #2a363b;
+    margin-bottom: 20px;
+}
+
+/* Container Styles */
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    flex-wrap: wrap;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.form-container, .photo-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+}
+
+.form-container {
+    flex: 1;
+    max-width: 450px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background-color: #ddd;
+    color: #2a363b;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+    margin: 5px;
+}
+
+.tab.active {
+    background-color: #2a363b;
+    color: white;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 95%; /* Make inputs stretch across the form */
+    box-sizing: border-box;
+}
+
+form input:focus {
+    border-color: #2a363b;
+    outline: none;
+    box-shadow: 0 0 5px rgba(42, 54, 59, 0.3);
+}
+
+/* Opening Hours */
+.opening-hours {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.opening-hours label {
+    font-size: 14px;
+    color: #2a363b;
+    margin-right: 5px;
+}
+
+/* Photo Upload Section */
+.photo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    height: 250px;
+}
+
+.upload-btn {
+    padding: 10px 20px;
+    background-color: white;
+    border: 2px dashed #aaa;
+    color: #2a363b;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.upload-btn:hover {
+    border-color: #2a363b;
+    color: #2a363b;
+}
+
+/* Submit Button */
+.submit {
+    padding: 12px 20px;
+    background-color: #2a363b;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100px;
+    margin: 10px auto;
+    display: block;
+}
+
+.submit:hover {
+    background-color: #1d262a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-container, .photo-container {
+        width: 90%;
+    }
+}

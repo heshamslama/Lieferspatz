@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 80%;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #001050;
+    }
+    .menu-item {
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .menu-item button {
+      background-color: #001050;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .menu-item button:hover {
+      background-color: #0030a0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Welcome to Your Client Dashboard</h1>
+  <p>Browse available menu items and place your orders.</p>
+  
+  <div class="menu">
+    <!-- Example of a menu item -->
+    <div class="menu-item">
+      <span>Pizza Margherita</span>
+      <button>Order Now</button>
+    </div>
+    <div class="menu-item">
+      <span>Pasta Carbonara</span>
+      <button>Order Now</button>
+    </div>
+    <div class="menu-item">
+      <span>Vegetarian Salad</span>
+      <button>Order Now</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Want to modify your details? <a href="/update-profile">Update Profile</a></p>
+    <p><a href="/logout">Logout</a></p>
+  </div>
+</div>
+
+</body>
+</html>

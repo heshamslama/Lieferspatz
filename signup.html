@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up</title>
+  <title>Integrated Signup</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,7 +24,7 @@
 
     h1 {
       text-align: center;
-      color: #001050;
+      color: #aa2c2c;
     }
 
     label {
@@ -33,7 +33,7 @@
       display: block;
     }
 
-    input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="time"] {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -42,7 +42,7 @@
     }
 
     button {
-      background-color: #001050;
+      background-color: #aa2c2c;
       color: white;
       font-size: 16px;
       padding: 12px;
@@ -53,12 +53,31 @@
     }
 
     button:hover {
-      background-color: #001050;
+      background-color: #aa2c2c;
     }
 
-    .footer {
-      text-align: center;
-      margin-top: 20px;
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      background-color: #ccc;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .tab.active {
+      background-color: #aa2c2c;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -66,29 +85,91 @@
 
 <div class="container">
   <h1>Sign Up</h1>
-  <form action="/signup" method="post">
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required><br>
+  
+    <!-- Tabs for selecting user type -->
+    <div class="tabs">
+      <button class="tab active" data-target="client-form">Client</button>
+      <button class="tab" data-target="restaurant-form">Restaurant</button>
+    </div>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required><br>
+    <!-- Client Signup Form -->
+    <form id="client-form" action="/signup" method="post">
+      <input type="hidden" name="userType" value="client">
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="firstName" required>
 
-    <label for="phone">Phone (optional):</label>
-    <input type="tel" id="phone" name="phone"><br>
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="lastName" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
+      <label for="phone">Phone (optional):</label>
+      <input type="tel" id="phone" name="phone">
 
-    <button type="submit">Sign Up</button>
-  </form>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
 
+      <button type="submit">Sign Up</button>
+    </form>
+    
+    <!-- Restaurant Signup Form -->
+    <form id="restaurant-form" action="/signup" method="post" class="hidden">
+      <input type="hidden" name="userType" value="restaurant">
+
+      <label for="restaurantName">Restaurant Name:</label>
+      <input type="text" id="restaurantName" name="restaurantName" required>
+
+      <label for="address">Street Name, Building Number:</label>
+      <input type="text" id="address" name="address" required>
+
+      <label for="postalCode">Postal Code:</label>
+      <input type="text" id="postalCode" name="postalCode" required>
+
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city" required>
+
+      <div class="opening-hours">
+        <label>Opening Hours:</label>
+        <input type="time" name="openingTime" required> to 
+        <input type="time" name="closingTime" required>
+      </div>
+
+      <label for="radius">Delivery Radius:</label>
+      <input type="text" id="radius" name="radius" required>
+
+      <label for="restaurantEmail">Email:</label>
+      <input type="email" id="restaurantEmail" name="email" required>
+
+      <label for="restaurantPassword">Password:</label>
+      <input type="password" id="restaurantPassword" name="password" required>
+
+      <button type="submit">Sign Up</button>
+    </form>
   <div class="footer">
     <p>Already have an account? <a href="/login">Login</a></p>
   </div>
 </div>
+
+<script>
+  // Handle tab switching
+  const tabs = document.querySelectorAll('.tab');
+  const forms = document.querySelectorAll('form');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Show the relevant form
+      const targetId = tab.getAttribute('data-target');
+      forms.forEach(form => {
+        form.id === targetId ? form.classList.remove('hidden') : form.classList.add('hidden'); 
+      });
+    });
+  });
+</script>
 
 </body>
 </html>

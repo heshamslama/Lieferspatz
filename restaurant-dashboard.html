@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 80%;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #001050;
+    }
+    .section-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #001050;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #001050;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0030a0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Welcome to Your Restaurant Dashboard</h1>
+  <p>Manage your restaurant profile and menu.</p>
+  
+  <!-- Restaurant Profile Section -->
+  <div class="form-group">
+    <h2 class="section-title">Restaurant Profile</h2>
+    <label for="restaurantName">Restaurant Name:</label>
+    <input type="text" id="restaurantName" placeholder="Enter your restaurant name" required>
+    <label for="address">Restaurant Address:</label>
+    <input type="text" id="address" placeholder="Enter your restaurant address" required>
+    <label for="openingHours">Opening Hours:</label>
+    <input type="text" id="openingHours" placeholder="Enter your restaurant opening hours" required>
+    <button>Save Profile</button>
+  </div>
+
+  <!-- Menu Management Section -->
+  <div class="form-group">
+    <h2 class="section-title">Menu Management</h2>
+    <label for="menuItem">Add New Menu Item:</label>
+    <input type="text" id="menuItem" placeholder="Menu Item Name" required>
+    <label for="menuDescription">Description:</label>
+    <textarea id="menuDescription" placeholder="Menu Item Description" required></textarea>
+    <button>Add Menu Item</button>
+  </div>
+
+  <!-- Delivery Options Section -->
+  <div class="form-group">
+    <h2 class="section-title">Delivery Options</h2>
+    <label for="deliveryRadius">Delivery Radius (km):</label>
+    <input type="number" id="deliveryRadius" placeholder="Enter delivery radius" required>
+    <label for="deliveryFee">Delivery Fee:</label>
+    <input type="text" id="deliveryFee" placeholder="Enter delivery fee" required>
+    <button>Save Delivery Options</button>
+  </div>
+
+  <div class="footer">
+    <p>Want to modify your details? <a href="/update-profile">Update Profile</a></p>
+    <p><a href="/logout">Logout</a></p>
+  </div>
+</div>
+
+</body>
+</html>

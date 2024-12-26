@@ -1,0 +1,129 @@
+/* navbarbody.css */
+
+/* General styles for the entire site */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar .logo-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.navbar .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #000000;
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.navbar a:hover {
+    color: #aa2c2c;
+}
+
+/* Page specific styles */
+.content {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #aa2c2c;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 20px;
+    color: #444;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+/* Career page styles */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+/* Contact page styles */
+.social-media {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-media a {
+    color: #000;
+    text-decoration: none;
+}
+
+.social-media img {
+    width: 30px;
+    height: 30px;
+}
+
+/* About Us page styles */
+h2 {
+    font-size: 24px;
+    color: #aa2c2c;
+}
+
+.content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.content ul li {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+/* Footer styles (for social media and text) */
+footer {
+    background-color: #111010;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}

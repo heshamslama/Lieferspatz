@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up as a Restaurant</title>
+    <link rel="stylesheet" href="signuprest.css">
+</head>
+<body>
+    <h1>Sign up as a restaurant</h1>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-container">
+            <h2>Signup</h2>
+            <div class="tabs">
+                <button class="tab">As a User</button>
+                <button class="tab active">As a Restaurant</button>
+            </div>
+            <form>
+                <input type="text" placeholder="User name" required>
+                <input type="text" placeholder="Street name, Building number" required>
+                <input type="text" placeholder="PLZ" required>
+                <input type="text" placeholder="City" required>
+                <div class="opening-hours">
+                    <label>Opening hours:</label>
+                    <input type="time" required> to <input type="time" required>
+                </div>
+                <input type="text" placeholder="Delivery radius" required>
+                <input type="email" placeholder="E-Mail" required>
+                <input type="password" placeholder="Password" required>
+            </form>
+        </div>
+
+        <!-- Photo Upload Section -->
+        <div class="photo-container">
+            <button class="upload-btn">Upload your restaurant photo</button>
+        </div>
+    </div>
+    <button type="submit" class="submit">Submit</button>
+</body>
+</html>

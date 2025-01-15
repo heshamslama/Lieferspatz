@@ -367,9 +367,11 @@
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                             <li class="nav-item">
+                                <h4>Your Balance: <%= clientBalance %> €</h4>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="/my-order">My Orders</a>
                             </li>
-
                             <li class="nav-item" id="signOutLink">
                                 <a class="nav-link" href="/signout">Sign Out</a>
                             </li>
@@ -411,20 +413,22 @@
 
     <main class="container">
         <div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-body-tertiary" id="mainArticle">
+           
             <div class="col-md-6 p-lg-5 mx-auto my-5">
                 <h1 class="display-3 fw-bold">
                     <div class="row p-4 p-md-5 mb-4 rounded text-body-emphasis">
-                        <div class="col-lg-6 px-0 mt-2">
+                        <div class="col-12 ">
+                            <img src="/uploads/<%= restaurant.image %>"
+                                alt="<%= restaurant.RestaurantName %>" width="30%" class="resturant-logo"
+                                style="border-radius: 3px" />
+                        </div>
+                        
+                        <div class="col-lg-12 px-0 mt-2">
                             <h2 id="restaurantName" class="display-4 bold">
-                                <%= restaurant.RestaurantName %>
+                                <%= restaurant.restaurantName %>
                             </h2>
                         </div>
 
-                        <div class="col-lg-6 d-lg-block">
-                            <img src="/images/resturants_logo/<%= restaurant.image %>"
-                                alt="<%= restaurant.RestaurantName %>" width="35%" class="resturant-logo"
-                                style="border-radius: 3px" />
-                        </div>
                     </div>
                 </h1>
                 <h3 class="fw-normal text-muted mb-3">
@@ -521,12 +525,12 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3" id="Menu">
+        <!-- d-md-flex flex-md-equal w-100 my-md-3 ps-md-3 -->
+        <!-- me-md-3 pt-3 px-3 pt-md-5 px-md-5 overflow-hidden -->
+        <div class="row g-4 " id="Menu">
             <% items.forEach(item=> { %>
-                <div class="bg-danger bg-gradient me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden"
-                    style="border-radius: 10px">
+                <div class=" bg-gradient text-center  mx-2 col"
+                    style="border-radius: 10px; background-color: #333;">
                     <div class="my-3 py-3">
                         <h2 class="display-5 font-weight-bold">
                             <%= item.itemName %>
@@ -545,7 +549,7 @@
                     </div>
                     <div class="bg-body-tertiary shadow-sm mx-auto overflow-hidden"
                         style="width: 80%; height: 300px; border-radius: 21px 21px 0 0">
-                        <img src="/images/menu_item/<%= item.image %>" alt="<%= item.itemName %>" width="580px"
+                        <img src="/uploads/<%= item.image %>" alt="<%= item.itemName %>" width="580px"
                             height="310px" style="border-radius: 10px" />
                     </div>
                 </div>

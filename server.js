@@ -43,7 +43,7 @@ app.use(express.json());
 // Serve static files (CSS, images, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/', express.static(path.join(__dirname, 'uploads')));
 // Function to calculate distance between two points using Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
@@ -109,7 +109,8 @@ const db = new sqlite3.Database("./database.db", (err) => {
         phone TEXT,
         password TEXT NOT NULL,
         latitude REAL,
-        longitude REAL
+        longitude REAL,
+        balance REAL
       )`,
       (err) => {
         if (err && !err.message.includes("duplicate")) {
@@ -138,7 +139,8 @@ const db = new sqlite3.Database("./database.db", (err) => {
         password TEXT NOT NULL,
         category TEXT,
         description TEXT,
-        image TEXT
+        image TEXT, 
+        balance REAL
       )`,
       (err) => {
         if (err) {
@@ -157,7 +159,7 @@ const db = new sqlite3.Database("./database.db", (err) => {
         restaurant_id INTEGER,
         itemName TEXT NOT NULL,
         itemPrice REAL NOT NULL,
-        image TEXT NOT NULL,
+        image TEXT,
         category TEXT NOT NULL,
         description TEXT,
         FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
@@ -218,10 +220,6 @@ app.get("/signup", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "login.html"));
-});
-
-app.get("/menu", (req, res) => {
-  res.sendFile(path.join(__dirname, "menu.html"));
 });
 
 app.get("/career", (req, res) => {
@@ -286,7 +284,7 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
         longitude,
         category,
         COALESCE(description, 'No description available') as description,
-        COALESCE(image, 'default.jpg') as image
+        COALESCE(image, 'defaultRestaurantLogo.png') as image
       FROM restaurants
     `,
         [],
@@ -333,6 +331,7 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
           res.render("client-dashboard", {
             restaurants: availableRestaurants,
             clientName: `${client.firstName} ${client.lastName}`,
+            clientBalance : client.balance
           });
 
         }
@@ -382,6 +381,7 @@ app.get("/restaurant-dashboard", isAuthenticated, (req, res) => {
 
               res.render("restaurant-dashboard", {
                 restaurantName: restaurant.restaurantName,
+                restaurantBalance: restaurant.balance,
                 items: items || [],
                 orders: orders || [],
               });
@@ -415,7 +415,7 @@ app.post("/update-location", isAuthenticated, (req, res) => {
 });
 
 // Signup handler
-app.post("/signup", async (req, res) => {
+app.post("/signup", upload.single("image"), async (req, res) => {
   const { userType } = req.body;
 
   if (!userType || !["client", "restaurant"].includes(userType)) {
@@ -425,11 +425,11 @@ app.post("/signup", async (req, res) => {
   if (userType === "client") {
     // Existing client signup code remains unchanged
     const { firstName, lastName, email, phone, password } = req.body;
-    const query = `INSERT INTO clients (firstName, lastName, email, phone, password) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO clients (firstName, lastName, email, phone, password , balance) VALUES (?, ?, ?, ?, ?, ?)`;
 
     db.run(
       query,
-      [firstName, lastName, email, phone, password],
+      [firstName, lastName, email, phone, password , 100.00],
       function (err) {
         if (err) {
           console.error("Error saving client to database:", err);
@@ -442,6 +442,8 @@ app.post("/signup", async (req, res) => {
     );
   } else if (userType === "restaurant") {
     try {
+      const image = req.file ? req.file.filename : "defaultRestaurantLogo.png";
+
       const {
         restaurantName,
         address,
@@ -452,6 +454,7 @@ app.post("/signup", async (req, res) => {
         radius,
         email,
         password,
+        description
       } = req.body;
 
       // Get coordinates from address
@@ -473,8 +476,11 @@ app.post("/signup", async (req, res) => {
           email, 
           password,
           latitude,
-          longitude
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          longitude,
+          image, 
+          balance,
+          description
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       db.run(
@@ -491,6 +497,9 @@ app.post("/signup", async (req, res) => {
           password,
           latitude,
           longitude,
+          image,
+          0.00,
+          description
         ],
         function (err) {
           if (err) {
@@ -739,6 +748,16 @@ app.put("/update-order-status/:id", isAuthenticated, (req, res) => {
 app.get('/restaurant-profile/:id', (req, res) => {
   const restaurantId = req.params.id;
 
+  // Get client's balance
+  db.get('SELECT balance FROM clients WHERE id = ?', [req.session.userId], (err, client) => {
+    if (err) {
+      return res.status(500).send('Error loading client data');
+    }
+
+    if (client) {
+      clientBalance = client.balance;
+    }
+
   // Fetch restaurant details
   db.get('SELECT * FROM restaurants WHERE id = ?', [restaurantId], (err, restaurant) => {
       if (err) {
@@ -758,8 +777,9 @@ app.get('/restaurant-profile/:id', (req, res) => {
           }
 
           // Render the restaurant-profile view with the restaurant and menu items
-          res.render('restaurant-profile', { restaurant, items });
+          res.render('restaurant-profile', { restaurant, items , clientBalance});
       });
+    });
   });
 });
 

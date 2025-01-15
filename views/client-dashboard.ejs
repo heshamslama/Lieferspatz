@@ -1,0 +1,172 @@
+<!-- views/client-dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
+    <title>Restaurants</title>
+</head>
+
+<body class="gradient-background" id="restaurant">
+    <header>
+        <nav class="navbar bg-body-tertiary fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Lieferspatz</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Lieferspatz</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/my-order">My Orders</a>
+                            </li>
+                            <li class="nav-item" id="signOutLink">
+                                <a class="nav-link" href="/signout">Sign Out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Location Status Section -->
+        <div class="location-status" style="margin-top: 5rem;">
+            <% if (typeof error !== 'undefined') { %>
+                <div class="alert alert-warning" role="alert">
+                    <%= error %>
+                    <button class="btn btn-primary ms-3" onclick="requestLocation()">Update Location</button>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Restaurants List -->
+        <% if (restaurants.length > 0) { %>
+            <% restaurants.forEach(restaurant => { %>
+                <div class="row mb-2" style="margin-top: 2rem;">
+                    <div class="col-md-12">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static">
+                                <h3 class="mb-0 text-dark">
+                                    <%= restaurant.restaurantName %> 
+                                </h3>
+                                
+                                <h6 class="mb-0 text-dark">
+                                    <%= restaurant.openingTime %> am -
+                                    <span><%= restaurant.closingTime %> pm</span>
+                                </h6>
+                                <p class="card-text mb-auto mt-4 text-dark">
+                                    <%= restaurant.description %>
+                                </p>
+                                <a href="/restaurant-profile/<%= restaurant.id %>"
+                                    class="icon-link gap-1 icon-link-hover stretched-link">
+                                    View Profile
+                                </a>
+                            </div>
+                            <div class="col-auto d-none d-lg-block">
+                                <svg class="bd-placeholder-img" width="200" height="250"
+                                    xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
+                                    preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <image href="/images/resturants_logo/<%= restaurant.image %>"
+                                        alt="<%= restaurant.RestaurantName %>" class="bd-placeholder-img card-img-top"
+                                        width="100%" height="100%" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-6 text-center">
+                    <h2 class="text-dark">No restaurants available within your area</h2>
+                    <button class="btn btn-primary mt-3" onclick="requestLocation()">Update Location</button>
+                </div>
+            </div>
+        <% } %>
+    </main>
+
+    <footer class="my-5 pt-5 text-body-secondary text-center text-small">
+        <p class="mb-1" id="copyright">©<span id="currentYear"></span> Lieferptatz</p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="#">Privacy</a></li>
+            <li class="list-inline-item"><a href="#">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Location handling functions
+        function requestLocation() {
+            // const spinner = document.getElementById('loadingSpinner');
+            // spinner.classList.remove('d-none');
+    
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        updateLocation(position.coords.latitude, position.coords.longitude);
+                        // spinner.classList.add('d-none'); // Hide spinner after location is fetched
+                    },
+                    function(error) {
+                        // spinner.classList.add('d-none');
+                        alert('Error getting location: ' + error.message);
+                    }
+                );
+            } else {
+                // spinner.classList.add('d-none');
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+
+        function updateLocation(latitude, longitude) {
+            fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ latitude, longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error updating location: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update location');
+            });
+        }
+
+        // Request location when page loads if none is set
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.querySelector('.location-status .alert')) {
+                requestLocation();
+            }
+        });
+    </script>
+</body>
+</html>

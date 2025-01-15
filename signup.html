@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Integrated Signup</title>
   <style>
     body {
@@ -79,18 +80,102 @@
     .hidden {
       display: none;
     }
+
+     #clientTab {
+     margin-right: -50px;
+    }
+
+    .tab.active {
+      
+      z-index: 1000;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #151516;
+        border-bottom: 0.5px solid #8d8d8d;
+    }
+
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;  /* Space between logo and text */
+    }
+
+    .navbar .logo-image {
+        width: 40px;  /* Adjust size as needed */
+        height: 40px;
+        object-fit: contain;
+    }
+
+    .navbar .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    .logo-container.effect-1 .logo-image {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .logo-container.effect-1:hover .logo-image {
+        transform: rotate(720deg) scale(1.1);
+    }
+
+    .logo-container.effect-1:hover .logo-text {
+        color: #c15e0d;
+        transition: color 0.3s ease;
+    }
+    .navbar .links {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #ffffff;
+        margin: 0 10px;
+        font-size: 16px;
+    }
   </style>
 </head>
 <body>
+  <div class="navbar">
+    <a href="/"><div class="logo-container effect-1" >
+        <img src="/images/logo.png" alt="LieferSpatz Logo" class="logo-image">
+        <div class="logo-text">LieferSpatz</div>
+    </div>
+  </a>
+    
+    <div class="links">
+        <a href="/Career">Career</a>
+        <a href="/Contact">Contact</a>
+        <a href="/about-us">About us</a>
+    </div>
+</div>
 
 <div class="container">
   <h1>Sign Up</h1>
   
     <!-- Tabs for selecting user type -->
     <div class="tabs">
-      <button class="tab active" data-target="client-form">Client</button>
+      <button class="tab active" data-target="client-form" id="clientTab">Client</button>
       <button class="tab" data-target="restaurant-form">Restaurant</button>
     </div>
+
 
     <!-- Client Signup Form -->
     <form id="client-form" action="/signup" method="post">
@@ -136,15 +221,27 @@
         <input type="time" name="closingTime" required>
       </div>
 
-      <label for="radius">Delivery Radius:</label>
-      <input type="text" id="radius" name="radius" required>
+      <div class="form-group">
+        <label for="radius">Delivery Radius (km)</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          id="radius" 
+          name="radius" 
+          required 
+          min="0.5" 
+          max="50" 
+          step="0.5"
+        >
+        <small class="form-text text-muted">Maximum distance (in kilometers) you're willing to deliver</small>
+      </div>
 
       <label for="restaurantEmail">Email:</label>
       <input type="email" id="restaurantEmail" name="email" required>
 
       <label for="restaurantPassword">Password:</label>
       <input type="password" id="restaurantPassword" name="password" required>
-
+      
       <button type="submit">Sign Up</button>
     </form>
   <div class="footer">

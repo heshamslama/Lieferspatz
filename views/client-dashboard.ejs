@@ -9,13 +9,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
     <title>Restaurants</title>
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2b3035;
+        }
+    
+        .navbar .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;  /* Space between logo and text */
+        }
+    
+        .navbar .logo-image {
+            width: 40px;  /* Adjust size as needed */
+            height: 40px;
+            object-fit: contain;
+        }
+    
+        .navbar .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .navbar .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .logo-container.effect-1 .logo-image {
+            transition: transform 0.3s ease-in-out;
+        }
+    
+        .logo-container.effect-1:hover .logo-image {
+            transform: rotate(720deg) scale(1.1);
+        }
+    
+        .logo-container.effect-1:hover .logo-text {
+            color: #c15e0d;
+            transition: color 0.3s ease;
+        }
+        .navbar .links {
+            display: flex;
+            align-items: center;
+        }
+        .burger-menu {
+          background-color: #ccc;
+        }
+    
+        .navbar a {
+            text-decoration: none;
+            color: #000000;
+            margin: 0 3px;
+            font-size: 16px;
+        }
+        .nav-pills .nav-link {
+          color: black !important;
+        }
+    
+        .nav-pills .nav-link.active {
+          color: white !important;
+          background-color: #042940 !important;
+        }
+
+        .itemCard:hover {
+        border: 3px solid green;
+        background-color: white !important;
+        color: black !important;
+        }
+
+        .itemCard:hover {
+        border: 1px solid rgba(204, 204, 204, 0.123) ;
+        }
+
+        .itemCard {
+        border: 1px solid #212529 ;
+        
+        }
+
+      </style>
 </head>
 
-<body class="gradient-background" id="restaurant">
-    <header>
-        <nav class="navbar bg-body-tertiary fixed-top">
+<body class=""style="background-color: #2b3035;" id="restaurant">
+    <!-- <header>
+        <nav class="navbar  fixed-top" style="background-color: #042940;">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">Lieferspatz</a>
+                <a class="navbar-brand text-white" href="/">Lieferspatz</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -42,7 +125,51 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header> -->
+
+    <!-- Header -->
+  <header>
+    <nav class="navbar fixed-top" style="background-color: #2b3035;">
+      <div class="container-fluid">
+        <a href="/client-dashboard">
+            <div class="logo-container effect-1">
+                <img src="/images/logo.png" alt="LieferSpatz Logo" class="logo-image">
+                <div class="logo-text">LieferSpatz</div>
+            </div>
+        </a>
+     
+        
+        <button class="navbar-toggler burger-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Lieferspatz</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+              <li class="nav-item">      
+                <h4>Your Balance: <%= clientBalance %> €</h4>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/my-order">My Orders</a>
+            </li>
+
+              <li class="nav-item" id="signOutLink">
+                <a class="nav-link" href="/signout">Sign Out</a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 
     <main class="container">
         <!-- Location Status Section -->
@@ -55,34 +182,35 @@
             <% } %>
         </div>
 
-        <h2 class="text-center">Moin  <%= clientName %> !</h2>
-
+        <h4 class="text-center" style="color: white;">Moin <%= clientName %> !</h4>
+        <h2 class="text-center" style="color: white;">Satisfy Your Cravings with Nearby Restaurants!</h2>
+        
         <div class="row mb-2" style="margin-top: 2rem;">
         <!-- Restaurants List -->
         <% if (restaurants.length > 0) { %>
             <% restaurants.forEach(restaurant => { %>
                 
-                    <div class="col-md-6">
-                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                            <div class="col p-4 d-flex flex-column position-static">
-                                <h3 class="mb-0 text-dark">
+                    <div class="col-md-6 ">
+                        <div class="row g-0  rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative itemCard">
+                            <div class="col p-4 d-flex flex-column position-static" style="background-color: #212529;">
+                                <h3 class="mb-0" style="color: white;">
                                     <%= restaurant.restaurantName %> 
                                 </h3>
                                 
-                                <h6 class="mb-0 text-dark">
+                                <h6 class="mb-0 text-light">
                                     <%= restaurant.openingTime %> am -
                                     <span><%= restaurant.closingTime %> pm</span>
                                 </h6>
-                                <p class="card-text mb-auto mt-4 text-dark">
+                                <p class="card-text mb-auto mt-4 text-light">
                                     <%= restaurant.description %>
                                 </p>
                                 <a href="/restaurant-profile/<%= restaurant.id %>"
-                                    class="icon-link gap-1 icon-link-hover stretched-link">
+                                    class=" stretched-link" style="color:#98c7f5;">
                                     View Profile
                                 </a>
                             </div>
                             <div class="col-auto d-none d-lg-block">
-                                <svg class="bd-placeholder-img" width="200" height="250"
+                                <svg class="" style="background-color: #212529;" width="200" height="250"
                                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
                                     preserveAspectRatio="xMidYMid slice" focusable="false">
                                     <image href="/uploads/<%= restaurant.image %>"
@@ -98,7 +226,7 @@
         </div>
             <div class="row justify-content-center mt-5">
                 <div class="col-md-6 text-center">
-                    <h2 class="text-dark">No restaurants available within your area</h2>
+                    <h2 class="text-light">No restaurants available within your area</h2>
                     <button class="btn btn-primary mt-3" onclick="requestLocation()">Update Location</button>
                 </div>
             </div>

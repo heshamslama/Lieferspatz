@@ -10,7 +10,7 @@
     <style lang="en" type="text/css" id="dark-mode-native-style"></style>
     <style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
-
+    
     <script>
 
 
@@ -234,7 +234,6 @@
             bottom: -30%;
             width: 300px;
             height: 540px;
-            background-color: #333;
             border-radius: 21px;
             transform: rotate(30deg);
         }
@@ -321,21 +320,73 @@
         }
     </style>
 
+<style>
+    
+
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;  /* Space between logo and text */
+    }
+
+    .navbar .logo-image {
+        width: 40px;  /* Adjust size as needed */
+        height: 40px;
+        object-fit: contain;
+    }
+
+    .navbar .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    .logo-container.effect-1 .logo-image {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .logo-container.effect-1:hover .logo-image {
+        transform: rotate(720deg) scale(1.1);
+    }
+
+    .logo-container.effect-1:hover .logo-text {
+        color: #c15e0d;
+        transition: color 0.3s ease;
+    }
+    
+   
+
+   
+    
+  </style>
 
 </head>
 
 <body>
     <header>
-        <nav class="navbar bg-body-tertiary fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Lieferspatz</a>
-                <div>
-                    <a href="#0" id="cart" style="float: right !important ; margin-right: 30px" data-bs-toggle="modal"
+        <nav class="navbar bg-body-tertiary fixed-top row">
+            <div class="row p-1">
+                <div class="col-auto ms-5">
+                    <a href="/client-dashboard" style="text-decoration: none;">
+                        <div class="logo-container effect-1">
+                            <img src="/images/logo.png" alt="LieferSpatz Logo" class="logo-image" >
+                            <div class="logo-text">LieferSpatz</div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-auto ms-auto">
+                    <a href="#0" id="cart" style="float: right !important" data-bs-toggle="modal"
                         data-bs-target="#cartModal">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                                 class="bi bi-cart" viewBox="0 0 16 16" style="
-                                margin-left: 75rem;
+                                float: right;
                             ">
 
                                 <path
@@ -350,9 +401,9 @@
                     </a>
                 </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                <button class="navbar-toggler col-auto" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon" ></span>
                 </button>
 
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
@@ -396,7 +447,7 @@
                 <div class="modal-body">
                     <table class="show-cart table"></table>
                     <div>
-                        <strong>Total price: $<span class="total-cart"></span></strong>
+                        <strong>Total price: €<span class="total-cart"></span></strong>
                     </div>
                     <div class="mt-3">
                         <label for="orderNote">Special Instructions:</label>
@@ -424,6 +475,7 @@
                         </div>
                         
                         <div class="col-lg-12 px-0 mt-2">
+                            <input type="hidden" value=" <%= restaurant.id %>" id="restaurantId">
                             <h2 id="restaurantName" class="display-4 bold">
                                 <%= restaurant.restaurantName %>
                             </h2>
@@ -438,13 +490,13 @@
                 </h3>
                 <div class="d-flex gap-3 justify-content-center lead fw-normal">
                     <a class="icon-link" href="#" data-bs-toggle="modal" data-bs-target="#restaurantModal">
-                        Learn more
+                        Restaurant Info 
                         <svg class="bi">
                             <use xlink:href="#chevron-right"></use>
                         </svg>
                     </a>
                     <a class="icon-link" href="#Menu">
-                        Buy
+                        Review The Menu
                         <svg class="bi">
                             <use xlink:href="#chevron-right"></use>
                         </svg>
@@ -530,7 +582,7 @@
         <div class="row g-4 " id="Menu">
             <% items.forEach(item=> { %>
                 <div class=" bg-gradient text-center  mx-2 col"
-                    style="border-radius: 10px; background-color: #333;">
+                    style="border-radius: 10px;">
                     <div class="my-3 py-3">
                         <h2 class="display-5 font-weight-bold">
                             <%= item.itemName %>
@@ -689,28 +741,50 @@
         });
 
         $("#orderNowBtn").click(function () {
-            const cartArray = shoppingCart.listCart();
-            console.log("Cart Array:", cartArray);
-            const orderNote = $("#orderNote").val(); // Get the note from the textarea
+                const cartArray = shoppingCart.listCart();
+                console.log("Cart Array:", cartArray);
 
-            $.ajax({
-                url: '/saveCart',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ items: cartArray, note: orderNote }),
-                success: function (response) {
+                const orderNote = $("#orderNote").val(); // Get the note from the textarea
+                const restaurantId = $("#restaurantId").val();
+                const totalPrice = shoppingCart.totalCart(); // Calculate total price
+                console.log("Total Price:", totalPrice);
 
-                    shoppingCart.clearCart();
-                    $("#orderNote").val(""); // Clear the note field
-                    displayCart();
-
-                    window.location.href = '/checkout';
-                },
-                error: function (error) {
-                    console.error('Error saving cart:', error);
-                }
+                $.ajax({
+                    url: '/saveCart',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        items: cartArray,
+                        note: orderNote,
+                        restaurantId,
+                        totalPrice
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            // Clear cart and reset UI
+                            shoppingCart.clearCart();
+                            $("#orderNote").val("");
+                            displayCart();
+                            alert(response.message); // Show success message
+                            closeCart();
+                            location.reload(); // Reload the page to update balance
+                        } else {
+                            // Handle case when success is false
+                            alert(response.message); // E.g., "Insufficient funds"
+                        }
+                    },
+                    error: function (error) {
+                        // Handle server errors (500 or unexpected errors)
+                        if (error.responseJSON && error.responseJSON.message) {
+                            alert(error.responseJSON.message); // Show specific error message
+                        } else {
+                            alert("An unexpected error occurred.");
+                        }
+                    }
+                });
             });
-        });
+
+        
 
 
         function displayCart() {
@@ -741,6 +815,10 @@
         $(document).ready(function () {
             displayCart();
         });
+
+        function closeCart() {
+            $('#cartModal').modal('hide');
+        }
 
     </script>
 </body>

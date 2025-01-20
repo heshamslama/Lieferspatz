@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      background-color: #212529;
       margin: 0;
       padding: 0;
     }
@@ -18,14 +18,14 @@
       max-width: 400px;
       margin: 50px auto;
       padding: 20px;
-      background-color: white;
+      background-color: #ffffffde;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
+    /* 2b3035 */
     h1 {
       text-align: center;
-      color: #aa2c2c;
+      color: #212529;
     }
 
     .form-group {
@@ -41,7 +41,7 @@
     input {
       width: 100%;
       padding: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
     }
@@ -49,7 +49,7 @@
     button {
       width: 100%;
       padding: 10px;
-      background-color: #aa2c2c;
+      background-color: #212529;
       color: white;
       border: none;
       border-radius: 4px;
@@ -57,7 +57,7 @@
     }
 
     button:hover {
-      background-color: #aa2c2c;
+      background-color: #212529;
     }
 
     .error-message {
@@ -88,7 +88,7 @@
     }
 
     .tab.active {
-      background-color: #aa2c2c;
+      background-color: #212529;
       color: white;
     }
 
@@ -110,8 +110,8 @@
         justify-content: space-between;
         align-items: center;
         padding: 10px 20px;
-        background-color: #151516;
-        border-bottom: 0.5px solid #8d8d8d;
+        background-color: #212529;
+        
     }
 
     .navbar .logo-container {
@@ -136,6 +136,7 @@
         align-items: center;
         gap: 10px;
         cursor: pointer;
+        margin-left: 16rem;
     }
     .logo-container.effect-1 .logo-image {
         transition: transform 0.3s ease-in-out;
@@ -152,6 +153,7 @@
     .navbar .links {
         display: flex;
         align-items: center;
+        margin-right: 16rem;
     }
 
     .navbar a {
@@ -164,17 +166,18 @@
 </head>
 <body>
   <div class="navbar">
-    <a href="/"><div class="logo-container effect-1" >
+    <a href="/">
+      <div class="logo-container effect-1">
         <img src="/images/logo.png" alt="LieferSpatz Logo" class="logo-image">
         <div class="logo-text">LieferSpatz</div>
-    </div>
-  </a>
+      </div>
+    </a>
     <div class="links">
-        <a href="/Career">Career</a>
-        <a href="/Contact">Contact</a>
-        <a href="/about-us">About us</a>
+      <a class="nav-link fw-bold py-1 px-0" href="/">Home</a>
+      <a class="nav-link fw-bold py-1 px-0" href="/about-us">About</a>
+      <a class="nav-link fw-bold py-1 px-0" href="/contact">Contact</a>
     </div>
-</div>
+  </div>
   <div class="container">
     <h1>Login</h1>
     <!-- Tabs for selecting user type -->
@@ -202,9 +205,11 @@
     </form>
     
     <div class="footer">
-      <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+      <p>Don't have an account? <a href="/signup" style="color: red">Sign Up</a></p>
     </div>
   </div>
+
+
   <script>
     // Handle tab switching
     const tabs = document.querySelectorAll('.tab');

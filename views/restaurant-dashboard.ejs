@@ -11,13 +11,71 @@
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
   <title>Dashboard</title>
   <style>
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #2C3E50;
+        border-bottom: 0.5px solid #8d8d8d;
+    }
+
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;  /* Space between logo and text */
+    }
+
+    .navbar .logo-image {
+        width: 40px;  /* Adjust size as needed */
+        height: 40px;
+        object-fit: contain;
+    }
+
+    .navbar .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+    .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    .logo-container.effect-1 .logo-image {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .logo-container.effect-1:hover .logo-image {
+        transform: rotate(720deg) scale(1.1);
+    }
+
+    .logo-container.effect-1:hover .logo-text {
+        color: #c15e0d;
+        transition: color 0.3s ease;
+    }
+    .navbar .links {
+        display: flex;
+        align-items: center;
+    }
+    .burger-menu {
+      background-color: white;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #000000;
+        margin: 0 3px;
+        font-size: 16px;
+    }
     .nav-pills .nav-link {
       color: black !important;
     }
 
     .nav-pills .nav-link.active {
       color: white !important;
-      background-color: #007bff !important;
+      background-color: #042940 !important;
     }
   </style>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"
@@ -50,15 +108,32 @@
         });
     }
 
-
-
     function confirmOrder(orderId) {
-
+     
       updateOrderStatus(orderId, 'Confirmed');
+      // money transaction
+      fetch('/confirmOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      }).then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(err => console.error('Error confirming order:', err));
     }
 
     function refuseOrder(orderId) {
+      
       updateOrderStatus(orderId, 'Refused');
+      // money transaction
+      fetch('/refuseOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      }).then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(err => console.error('Error refusing order:', err));
+        
+
     }
 
     function updateOrderStatus(orderId, newStatus) {
@@ -86,19 +161,26 @@
 
   </script>
 
+
+
 </head>
 
 <body>
   <!-- Header -->
   <header>
-    <nav class="navbar bg-body-tertiary fixed-top">
+    <nav class="navbar fixed-top" style="background-color: #042940;">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">Lieferspatz</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+        <a href="/restaurant-dashboard"><div class="logo-container effect-1" >
+          <img src="/images/logo.png" alt="LieferSpatz Logo" class="logo-image" width="40px">
+          <div class="logo-text">LieferSpatz</div>
+      </div>
+     </a>
+        
+        <button class="navbar-toggler burger-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
           aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Lieferspatz</h5>
@@ -126,7 +208,7 @@
   <!-- container -->
   <div class="container-fluid d-flex flex-row">
     <!-- Sidebar -->
-    <nav class="d-flex flex-column flex-shrink-0 p-3 bg-white col-lg-2" style="height: 100vh">
+    <nav class="d-flex flex-column flex-shrink-0 p-3 col-lg-2" style="height: 100vh; background-color: #f7f8f9f2;">
       <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" fill="currentColor" class="bi bi-graph-up"
           viewBox="0 0 16 16" style="margin-right: 10px">
@@ -181,11 +263,11 @@
     </nav>
 
     <!-- Content -->
-    <main class="px-lg-4 px-xl-5 col-lg-10" style="background-color: #f7f8f9">
+    <main class="px-lg-4 px-xl-5 col-lg-10" style="background-color: #f7f8f905">
 
-      <h1 style="text-align: center; margin-top: 3rem;">Moin <%= restaurantName %> !
+      <h1 style="text-align: center; margin-top: 5rem; color: #2C3E50;">Moin <%= restaurantName %> !
       </h1>
-
+      <hr />
       <!-- Overview container -->
       <article id="overview" style="height: 100vh; display: block" class="content-section row">
 
@@ -203,7 +285,7 @@
               justify-content: space-evenly;
               align-items: center;
             ">
-                      <div class="card text-bg-success mb-3" style="max-width: 18rem; height: 110px">
+                      <div class="card mb-3" style="background-color: #042940; color: white; max-width: 18rem; height: 110px">
                         <div class="card-header">Total orders</div>
                         <div class="card-body">
                           <p class="card-text">total orders = <span>
@@ -212,7 +294,7 @@
                         </div>
                       </div>
 
-                      <div class="card text-bg-primary mb-3" style="max-width: 18rem; height: 110px">
+                      <div class="card mb-3" style="background-color: #005C53; color: white; max-width: 18rem; height: 110px">
                         <div class="card-header">Confirmed orders</div>
                         <div class="card-body">
                           <p class="card-text">Confirmed orders = <span>
@@ -221,7 +303,7 @@
                         </div>
                       </div>
 
-                      <div class="card text-bg-danger mb-3" style="max-width: 18rem; height: 110px">
+                      <div class="card mb-3" style="background-color: #A62B1F; color: white; max-width: 18rem; height: 110px">
                         <div class="card-header">Refused orders</div>
                         <div class="card-body">
                           <p class="card-text">Refused orders = <span>
@@ -239,17 +321,32 @@
         <div class="row" style="margin-top: 10px">
           <section class="container">
             <div class="row">
-              <div class="col-lg-6 col-md-8 px-lg-4">
-                <h1 class="fw-light">My Menu</h1>
+              <div class="">
+            
+                <h1 class="menu-title" >Restaurant Menu</h1>
+                <style>
+                  .menu-title {
+                    text-align: center;
+                    font-size: 70px;
+                    color: #2C3E50;
+                    margin-bottom: 3rem;
+                    text-align: center; margin-top: 3rem;
+                  }
+                
+                </style>
                 <p>
-                <form action="/delete-menu" method="post" >
-                  <button type="submit" class="btn btn-danger my-2">Delete the Menu</button>
+                <form action="/delete-menu" method="post" onsubmit="return confirmDelete();">
+                  <button class="btn delete-btn" style="background-color: #A62B1F; color: white; border: none;">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
                 </form>
-
-                <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal"
-                  data-bs-target="#addItemModal">
-                  Add Item
+                <form action="">
+                  <button type="button" class="btn my-2" data-bs-toggle="modal" data-bs-target="#addItemModal"
+                  style="background-color: #005C53; color: white; border-radius: 8px; padding: 10px 20px; font-size: 16px;">
+                  Add a New Item
                 </button>
+                </form>
+                
                 </p>
               </div>
             </div>
@@ -290,10 +387,10 @@
                     <textarea name="description" class="form-control" id="description" required></textarea>
 
                     <div class="modal-footer row">
-                      <button type="submit" name="button" class="btn btn-primary">
+                      <button type="submit" name="button" class="btn my-2" style="background-color: #042940; color: white; border: none;">
                         Submit
                       </button>
-                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal" class="btn my-2" style="background-color: #A62B1F; color: white; border: none;">
                         Close
                       </button>
                     </div>
@@ -338,8 +435,8 @@
                         id="editDescription"><%= item.description %></textarea>
 
                       <div class="modal-footer row">
-                        <button type="submit" name="button" class="btn btn-primary">Update Item</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="button" class="btn " style="background-color: #042940; color: white; border: none;" >Update Item</button>
+                        <button type="button" class="btn " style="background-color: #A62B1F; color: white; border: none;" data-bs-dismiss="modal">Close</button>
                       </div>
                     </form>
                   </div>
@@ -396,12 +493,12 @@
           <table id="ordersTable" class="display" style="width: 100%">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Order Id</th>
+                <th>Details</th>
                 <th>Time</th>
                 <th>Date</th>
-                <th>Order Id</th>
-                <th>Quantity</th>
                 <th>Total price</th>
+                <th>Notes</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -410,7 +507,10 @@
                 <% if (order.order_status==='In Progress' ) { %>
                   <tr>
                     <td>
-                      <%= order.item_name %>
+                      <%= order.id %>
+                    </td>
+                    <td>
+                      <%= order.items %>
                     </td>
                     <td>
                       <%= order.order_date_time %>
@@ -419,19 +519,16 @@
                       <%= order.order_date_date %>
                     </td>
                     <td>
-                      <%= order.id %>
-                    </td>
-                    <td>
-                      <%= order.quantity %>
-                    </td>
-                    <td>
                       <%= order.total_price %> Euro
                     </td>
                     <td>
-                      <a href="#" class="btn btn-primary my-2 confirm-order-btn" data-bs-toggle="modal"
+                      <%= order.note %>
+                    </td>
+                    <td>
+                      <a href="#" class="btn my-2 confirm-order-btn" style="background-color: #042940; color: white; border: none;" data-bs-toggle="modal"
                         data-bs-target="#viewOrderModal" data-order-id="<%= order.id %>"
-                        onclick="confirmOrder('<%= order.id %>')">Confirm Order</a>
-                      <a href="#" class="btn btn-danger my-2 refuse-order-btn" data-bs-toggle="modal"
+                        onclick="confirmOrder('<%= order.id %>' )">Confirm Order</a>
+                      <a href="#" class="btn my-2 refuse-order-btn" style="background-color: #A62B1F; color: white; border: none;" data-bs-toggle="modal"
                         data-bs-target="#viewOrderModal" data-order-id="<%= order.id %>"
                         onclick="refuseOrder('<%= order.id %>')">Refuse Order</a>
                     </td>
@@ -452,12 +549,12 @@
           <table id="ordersHistoryTable" class="display" style="width: 100%">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Order Id</th>
+                <th>Details</th>
                 <th>Time</th>
                 <th>Date</th>
-                <th>Order Id</th>
-                <th>Quantity</th>
                 <th>Total price</th>
+                <th>Notes</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -466,7 +563,10 @@
                 <% if (order.order_status==='Confirmed' || order.order_status==='Refused' ) { %>
                   <tr>
                     <td>
-                      <%= order.item_name %>
+                      <%= order.id %>
+                    </td>
+                    <td>
+                      <%= order.items %>
                     </td>
                     <td>
                       <%= order.order_date_time %>
@@ -475,13 +575,10 @@
                       <%= order.order_date_date %>
                     </td>
                     <td>
-                      <%= order.id %>
-                    </td>
-                    <td>
-                      <%= order.quantity %>
-                    </td>
-                    <td>
                       <%= order.total_price %> Euro
+                    </td>
+                    <td>
+                      <%= order.note %>
                     </td>
                     <td>
                       <%= order.order_status %>
@@ -529,7 +626,11 @@
     </ul>
   </footer>
 
-
+  <script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this menu? This action cannot be undone.");
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>

@@ -236,10 +236,6 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "login.html"));
 });
 
-app.get("/career", (req, res) => {
-  res.sendFile(path.join(__dirname, "career.html"));
-});
-
 app.get("/contact", (req, res) => {
   res.sendFile(path.join(__dirname, "contact.html"));
 });
@@ -409,8 +405,6 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
     return res.redirect("/login");
   }
 
-  
-
   // Get the client's info including their location
   db.get(
     "SELECT * FROM clients WHERE id = ?",
@@ -424,9 +418,7 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
       if (!client) {
         return res.redirect("/login");
       }
-      console.log("Client Data:", client);
       
-
       // If client doesn't have location data, we'll need to handle that
       if (!client.latitude || !client.longitude) {
         return res.render("client-dashboard", {
@@ -436,8 +428,6 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
           clientBalance : client.balance,
         });
       }
-
-      
 
       // Get the current time in HH:mm format
       const now = new Date();
@@ -470,7 +460,6 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
             return res.status(500).send("Database error");
           }
           
-
           // Filter restaurants based on opening hours and delivery radius
           const availableRestaurants = restaurants.filter((restaurant) => {
             
@@ -498,12 +487,9 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
             // Return only restaurants that are open and within delivery radius
             return isOpen && (distance <= restaurant.radius);
           });
-
          
           // Sort restaurants by distance
           availableRestaurants.sort((a, b) => a.distance - b.distance);
-
-          console.log("ClientBalance >>>>>>>", client.balance);
           
           // Render the EJS template with the filtered restaurant data
           res.render("client-dashboard", {
@@ -616,9 +602,6 @@ app.get("/my-order", isAuthenticated, (req, res) => {
     }
   );
 });
-
-
-
 
 // Restaurant dashboard route
 app.get("/restaurant-dashboard", isAuthenticated, (req, res) => {
@@ -756,11 +739,7 @@ app.post("/add-item", isAuthenticated, upload.single("image"), (req, res) => {
   );
 });
 
-app.post(
-  "/update-item/:id",
-  isAuthenticated,
-  upload.single("editImage"),
-  (req, res) => {
+app.post("/update-item/:id",isAuthenticated,upload.single("editImage"),(req, res) => {
     const itemId = req.params.id;
     const { editItemName, editItemPrice, editCategory, editDescription } =
       req.body;
@@ -839,184 +818,6 @@ app.put("/update-order-status/:id", isAuthenticated, (req, res) => {
   );
 });
 
-// // 2. Shopping Cart Management
-// app.post('/cart/add', isAuthenticated, (req, res) => {
-//   const { restaurantId, itemId, quantity, notes } = req.body;
-  
-//   // Initialize cart if it doesn't exist
-//   if (!req.session.cart) {
-//     req.session.cart = {
-//       restaurantId: null,
-//       items: [],
-//       notes: ''
-//     };
-//   }
-  
-//   // Check if adding from a different restaurant
-//   if (req.session.cart.restaurantId && req.session.cart.restaurantId !== parseInt(restaurantId)) {
-//     return res.status(400).json({
-//       error: 'Cannot add items from different restaurants to cart'
-//     });
-//   }
-  
-//   // Get item details
-//   db.get('SELECT * FROM menu_items WHERE id = ?', [itemId], (err, item) => {
-//     if (err || !item) {
-//       return res.status(404).json({ error: 'Item not found' });
-//     }
-    
-//     // Add to cart
-//     req.session.cart.restaurantId = parseInt(restaurantId);
-    
-//     // Check if item already exists in cart
-//     const existingItemIndex = req.session.cart.items.findIndex(i => i.id === parseInt(itemId));
-    
-//     if (existingItemIndex > -1) {
-//       req.session.cart.items[existingItemIndex].quantity += parseInt(quantity);
-//     } else {
-//       req.session.cart.items.push({
-//         id: item.id,
-//         name: item.itemName,
-//         price: item.itemPrice,
-//         quantity: parseInt(quantity)
-//       });
-//     }
-    
-//     if (notes) {
-//       req.session.cart.notes = notes;
-//     }
-    
-//     res.json({ 
-//       success: true, 
-//       cart: req.session.cart,
-//       total: calculateCartTotal(req.session.cart.items)
-//     });
-//   });
-// });
-
-// Cart management routes
-// app.post('/saveCart', isAuthenticated, async (req, res) => {
-//   try {
-//     const { items, note, restaurantId, totalPrice } = req.body;
-//     const userId = req.session.userId;
-
-    
-
-
-//     if (!items || items.length === 0) {
-//       return res.status(400).json({ success: false, message: "Cart is empty." });
-//     }
-
-//     // Transform items to the desired format
-//     const formattedItems = items.map(item => `(${item.count}x ${item.name} | ${item.price} €)`).join('\r\n');
-
-//     // Insert the order into the database
-//     await db.run(`
-//       INSERT INTO orders (restaurant_id, client_id, items, total_price, order_status, order_date_time, order_date_date, note) 
-//       VALUES (?, ?, ?, ?, 'In Progress', datetime('now'), date('now'), ?)
-//     `, [restaurantId, userId, formattedItems, totalPrice, note]);
-
-//     res.json({ success: true, message: "Order placed successfully!" });
-//   } catch (error) {
-//     console.error("Error saving order:", error);
-//     res.status(500).json({ success: false, message: "An error occurred while saving the order." });
-//   }
-// });
-
-// app.post('/saveCart', isAuthenticated, async (req, res) => {
-//   try {
-//     const { items, note, restaurantId, totalPrice } = req.body;
-//     const userId = req.session.userId;
-
-//     if (!items || items.length === 0) {
-//       return res.status(400).json({ success: false, message: "Cart is empty." });
-//     }
-
-//     // Transform items to the desired format
-//     const formattedItems = items.map(item => `(${item.count}x ${item.name} | ${item.price} €)`).join('\r\n');
-
-//     // Check client balance
-//     db.get('SELECT balance FROM clients WHERE id = ?', [userId], (err, client) => {
-//       if (err) {
-//         console.error("Error fetching client balance:", err);
-//         return res.status(500).json({ success: false, message: "An error occurred while checking client balance." });
-//       }
-
-//       if (!client || client.balance < totalPrice) {
-//         return res.status(400).json({ success: false, message: "Insufficient funds." });
-//       }
-
-//       const restaurantShare = Math.round(totalPrice * 0.85 * 100) / 100; // 85% to restaurant
-//       const platformShare = Math.round(totalPrice * 0.15 * 100) / 100;   // 15% to platform
-
-//       // Begin database transaction
-//       db.serialize(() => {
-//         // Deduct total from client balance
-//         db.run(
-//           'UPDATE clients SET balance = balance - ? WHERE id = ?',
-//           [totalPrice, userId],
-//           (err) => {
-//             if (err) {
-//               console.error("Error updating client balance:", err);
-//               return res.status(500).json({ success: false, message: "An error occurred while updating client balance." });
-//             }
-//           }
-//         );
-
-//         // Add restaurant share to restaurant balance
-//         db.run(
-//           'UPDATE restaurants SET balance = balance + ? WHERE id = ?',
-//           [restaurantShare, restaurantId],
-//           (err) => {
-//             if (err) {
-//               console.error("Error updating restaurant balance:", err);
-//               return res.status(500).json({ success: false, message: "An error occurred while updating restaurant balance." });
-//             }
-//           }
-//         );
-
-//         // Add LieferspatzBalance share to LieferspatzBalance balance
-//         db.run(
-//           `INSERT INTO LieferspatzBalance (id, balance)
-//            VALUES (1, ?)
-//            ON CONFLICT (id) 
-//            DO UPDATE SET balance = balance + excluded.balance`,
-//           [platformShare],
-//           (err) => {
-//             if (err) {
-//               console.error("Error updating LieferspatzBalance balance:", err);
-//               return res.status(500).json({ success: false, message: "An error occurred while updating LieferspatzBalance balance." });
-//             }
-//           }
-//         );
-
-//         // Insert the order into the database
-//         db.run(
-//           `
-//           INSERT INTO orders (restaurant_id, client_id, items, total_price, order_status, order_date_time, order_date_date, note)
-//           VALUES (?, ?, ?, ?, 'In Progress', datetime('now'), date('now'), ?)
-//           `,
-//           [restaurantId, userId, formattedItems, totalPrice, note],
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving order:", err);
-//               return res.status(500).json({ success: false, message: "An error occurred while saving the order." });
-//             }
-
-//             // Send success response after all operations
-//             res.json({ success: true, message: "Order placed successfully!" });
-//           }
-//         );
-//       });
-//     });
-//   } catch (error) {
-//     console.error("Error in /saveCart route:", error);
-//     res.status(500).json({ success: false, message: "An unexpected error occurred." });
-//   }
-// });
-
-
-
 app.post('/saveCart', isAuthenticated, async (req, res) => {
   try {
     const { items, note, restaurantId, totalPrice } = req.body;
@@ -1088,7 +889,6 @@ app.post('/saveCart', isAuthenticated, async (req, res) => {
   }
 });
 
-
 app.post('/confirmOrder', isAuthenticated, (req, res) => {
   const { orderId } = req.body;
 
@@ -1142,8 +942,6 @@ app.post('/confirmOrder', isAuthenticated, (req, res) => {
   });
 });
 
-
-
 app.post('/refuseOrder', isAuthenticated, (req, res) => {
   const { orderId } = req.body;
 
@@ -1182,165 +980,6 @@ app.post('/refuseOrder', isAuthenticated, (req, res) => {
     });
   });
 });
-
-
-
-
-
-
-/* 
- id INTEGER PRIMARY KEY AUTOINCREMENT,
-        restaurant_id INTEGER,
-        client_id INTEGER,
-        items TEXT NOT NULL, 
-        note TEXT, 
-        total_price REAL NOT NULL,
-        order_status TEXT DEFAULT 'In Progress',
-        order_date_time TEXT,
-        order_date_date TEXT,
-
-// app.post('/saveCart', isAuthenticated, (req, res) => {
-//   const { items, note , restaurantId , totalPrice } = req.body;
-  const UserId = req.session.userId;
-
-
-  
-//   // Save cart to session
-//   req.session.cart = {
-//     restaurantId: req.session.restaurantId,
-//     items: items.map(item => ({
-//       name: item.name,
-//       price: parseFloat(item.price),
-//       quantity: parseInt(item.count)
-//     })),
-//     notes: note || '',
-//     total: items.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.count)), 0)
-//   };
-  
-//   res.json({ success: true });
-// }); */
-
-
-
-
-
-
-
-
-
-
-
-// // 3. Cart View Route
-// app.get('/checkout', isAuthenticated, (req, res) => {
-//   if (!req.session.cart || !req.session.cart.items.length) {
-//     return res.render('cart', { cart: null });
-//   }
-  
-//   // Get restaurant details
-//   db.get('SELECT * FROM restaurants WHERE id = ?', [req.session.cart.restaurantId], (err, restaurant) => {
-//     if (err) {
-//       return res.status(500).send('Error loading cart');
-//     }
-    
-//     // Get client's balance
-//     db.get('SELECT balance FROM clients WHERE id = ?', [req.session.userId], (err, client) => {
-//       if (err) {
-//         return res.status(500).send('Error loading client data');
-//       }
-      
-//       const total = calculateCartTotal(req.session.cart.items);
-      
-//       res.render('cart', {
-//         cart: req.session.cart,
-//         restaurant,
-//         total,
-//         clientBalance: client.balance,
-//         canAfford: client.balance >= total
-//       });
-//     });
-//   });
-// });
-
-// // 4. Place Order Route
-// app.post('/place-order', isAuthenticated, (req, res) => {
-//   if (!req.session.cart || !req.session.cart.items.length) {
-//     return res.status(400).json({ error: 'Cart is empty' });
-//   }
-  
-//   const total = calculateCartTotal(req.session.cart.items);
-  
-//   // Start transaction
-//   db.serialize(() => {
-//     db.run('BEGIN TRANSACTION');
-    
-//     try {
-      // // Check client balance
-      // db.get('SELECT balance FROM clients WHERE id = ?', [req.session.userId], (err, client) => {
-      //   if (err || !client || client.balance < total) {
-      //     throw new Error('Insufficient funds');
-      //   }
-        
-      //   const restaurantShare = Math.round(total * 0.85 * 100) / 100; // 85% to restaurant
-      //   const platformShare = Math.round(total * 0.15 * 100) / 100;   // 15% to platform
-        
-      //   // Update client balance
-      //   db.run('UPDATE clients SET balance = balance - ? WHERE id = ?', 
-      //     [total, req.session.userId]);
-        
-      //   // Update restaurant balance
-      //   db.run('UPDATE restaurants SET balance = balance + ? WHERE id = ?', 
-      //     [restaurantShare, req.session.cart.restaurantId]);
-        
-      //   // Update platform balance
-      //   db.run('UPDATE platform SET balance = balance + ?', [platformShare]);
-        
-//         // Create order records
-//         const orderDate = new Date();
-//         req.session.cart.items.forEach(item => {
-//           db.run(`
-//             INSERT INTO orders (
-//               restaurant_id,
-//               client_id,
-//               item_name,
-//               quantity,
-//               total_price,
-//               order_status,
-//               order_date_time,
-//               order_date_date,
-//               notes
-//             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-//           `, [
-//             req.session.cart.restaurantId,
-//             req.session.userId,
-//             item.name,
-//             item.quantity,
-//             item.price * item.quantity,
-//             'In Progress',
-//             orderDate.toLocaleTimeString(),
-//             orderDate.toLocaleDateString(),
-//             req.session.cart.notes
-//           ]);
-//         });
-        
-//         db.run('COMMIT', (err) => {
-//           if (err) throw err;
-//           // Clear cart after successful order
-//           req.session.cart = null;
-//           res.json({ success: true, message: 'Order placed successfully' });
-//         });
-//       });
-//     } catch (err) {
-//       db.run('ROLLBACK');
-//       console.error('Error placing order:', err);
-//       res.status(500).json({ error: 'Failed to place order' });
-//     }
-//   });
-// });
-
-// // Helper function to calculate cart total
-// function calculateCartTotal(items) {
-//   return Math.round(items.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 100) / 100;
-// }
 
 // Signout route
 app.get("/signout", (req, res) => {

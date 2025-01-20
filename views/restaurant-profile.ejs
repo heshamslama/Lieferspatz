@@ -115,7 +115,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
 
-    <title>restaurant</title>
+    <title>Restaurant Page</title>
+    <link
+      rel="icon"
+      href="/images/logo.png"
+      sizes="32x32"
+      type="image/png"
+    />
 
     <link href="https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
@@ -359,10 +365,7 @@
         transition: color 0.3s ease;
     }
     
-   
 
-   
-    
   </style>
 
 </head>
@@ -581,8 +584,10 @@
         <!-- me-md-3 pt-3 px-3 pt-md-5 px-md-5 overflow-hidden -->
         <div class="row g-4 " id="Menu">
             <% items.forEach(item=> { %>
-                <div class=" bg-gradient text-center  mx-2 col"
-                    style="border-radius: 10px;">
+                <div class=" bg-gradient text-center itemCard mx-2 col"
+                    style="border-radius: 10px;background-color: #212529; transition: transform 0.3s ease;"
+                    onmouseover="this.style.transform='scale(1.03)'" 
+                    onmouseout="this.style.transform='scale(1)'">
                     <div class="my-3 py-3">
                         <h2 class="display-5 font-weight-bold">
                             <%= item.itemName %>
@@ -813,6 +818,7 @@
         }
 
         $(document).ready(function () {
+          
             displayCart();
         });
 

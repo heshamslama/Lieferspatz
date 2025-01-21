@@ -1,7 +1,0 @@
-// [
-// {"item_name": "Burger", "quantity": 2, "price_per_item": 5.50}, 
-// {"item_name": "Fries", "quantity": 1, "price_per_item": 2.00}
-// ]
-
-
-// item.quantity+"X" + item.item_name + item.quantity+"X" + item.price_per_item

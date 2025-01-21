@@ -201,7 +201,7 @@ const db = new sqlite3.Database("./database.db", (err) => {
       `
       CREATE TABLE IF NOT EXISTS LieferspatzBalance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        balance REAL Default 0
+        balance DECIMAL(10, 2) DEFAULT 0.00
       )`,
       (err) => {
         if (err) {

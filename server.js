@@ -38,6 +38,15 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
 // Serve static files (CSS, images, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -214,15 +223,6 @@ const db = new sqlite3.Database("./database.db", (err) => {
   }
 });
 
-// Middleware to check if user is authenticated
-const isAuthenticated = (req, res, next) => {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-};
-
 // Routes for static pages
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "start.html"));
@@ -273,7 +273,6 @@ app.post("/signup", upload.single("image"), async (req, res) => {
   } else if (userType === "restaurant") {
     try {
       const image = req.file ? req.file.filename : "defaultRestaurantLogo.png";
-      console.log("im inside the try");
 
       const {
         restaurantName,

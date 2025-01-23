@@ -23,7 +23,14 @@
             padding: 10px 20px;
             background-color: #2b3035;
         }
-    
+
+
+        .navbar #signOutLink :hover{
+            color: red;
+        }
+        .navbar #myorderslink :hover{
+            color: #ccc;
+        }
         .navbar .logo-container {
             display: flex;
             align-items: center;
@@ -158,7 +165,7 @@
               <li class="nav-item">      
                 <h4>Your Balance: <%= clientBalance %> €</h4>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="myorderslink">
                 <a class="nav-link" href="/my-order">My Orders</a>
             </li>
 

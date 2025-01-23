@@ -198,7 +198,7 @@
       <button class="tab" data-target="loginForm">Restaurant</button>
     </div>
 
-    <form id="loginForm" action="">
+    <form id="loginForm" action="" >
       <input type="hidden" name="userType" value="client" id="userType">
 
       <div class="form-group">
@@ -290,73 +290,7 @@
       }
     });
   </script>
-<!--   
-  <script>
-    // Handle tab switching
-    const tabs = document.querySelectorAll('.tab');
-    const userTypeInput = document.getElementById('userType'); // Reference the hidden input field
-  
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        // Remove active class from all tabs
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        userTypeInput.value = tab.textContent.toLowerCase(); // Update the hidden input value
-      });
-    });
-  
-    // Handle form submission with AJAX
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-  
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const userType = userTypeInput.value; // Get the updated user type
-      const errorMessage = document.getElementById('errorMessage');
-  
-      // Clear any previous error message
-      errorMessage.style.display = 'none';
-  
-      // Check for empty fields
-      if (!email || !password) {
-        errorMessage.textContent = "Please fill in all fields.";
-        errorMessage.style.display = 'block';
-        return;
-      }
-  
-      console.log("Submitting with:", { email, password, userType });
-  
-      // Create an AJAX request
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:3000/login', true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-  
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            if (data.success) {
-              window.location.href = data.redirect; // Redirect on successful login
-            } else {
-              errorMessage.textContent = data.message;
-              errorMessage.style.display = 'block';
-            }
-          } else if (xhr.status === 401) {
-            // Handle invalid credentials
-            errorMessage.textContent = "Invalid email or password.";
-            errorMessage.style.display = 'block';
-          } else {
-            // Handle other server errors
-            errorMessage.textContent = "An error occurred during login. Please try again.";
-            errorMessage.style.display = 'block';
-          }
-        }
-      };
-  
-      // Send the login request with data
-      xhr.send(JSON.stringify({ email, password, userType }));
-    });
-  </script> -->
+
   
 
 

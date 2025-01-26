@@ -242,6 +242,15 @@
                 </div>
             </div>
         <% } %>
+
+        
+    
+        
+        <div class="text-center mt-5">
+            <h3 class="text-white">Want to change your Location to the current Location?</h3>
+            <button class="btn btn-primary mt-3" onclick="requestLocation()">Update Location</button>
+        </div>
+       
     </main>
 
     <footer class="my-5 pt-5 text-body-secondary text-center text-small">
@@ -264,22 +273,17 @@
 
         // Location handling functions
         function requestLocation() {
-            // const spinner = document.getElementById('loadingSpinner');
-            // spinner.classList.remove('d-none');
     
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         updateLocation(position.coords.latitude, position.coords.longitude);
-                        // spinner.classList.add('d-none'); // Hide spinner after location is fetched
                     },
                     function(error) {
-                        // spinner.classList.add('d-none');
                         alert('Error getting location: ' + error.message);
                     }
                 );
             } else {
-                // spinner.classList.add('d-none');
                 alert('Geolocation is not supported by this browser.');
             }
         }

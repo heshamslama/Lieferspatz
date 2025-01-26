@@ -642,6 +642,22 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
+
+        $(document).ready(function () {
+            // Check if a new user has logged in
+            const sessionUserId = "<%= sessionUserId %>"; // Use the user ID passed from the backend
+            const storedUserId = sessionStorage.getItem("loggedInUser");
+
+            if (!storedUserId || storedUserId !== sessionUserId) {
+                // Clear cart if no user is stored or a different user logs in
+                shoppingCart.clearCart();
+                sessionStorage.setItem("loggedInUser", sessionUserId); // Store the current user ID
+            }
+
+            // Display the cart
+            displayCart();
+        });
+
         // Shopping Cart API
         const shoppingCart = (function () {
             let cart = [];

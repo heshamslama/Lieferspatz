@@ -14,11 +14,11 @@ const io = socketIo(server);
 // Global socket connection tracking
 const connectedRestaurants = {};
 io.on('connection', (socket) => {
-  console.log('New socket connection:', socket.id);
+  // console.log('New socket connection:', socket.id);
 
   socket.on('register', (restaurantId) => {
-    console.log(`PRECISE LOGGING - Registering restaurant: ${restaurantId}`);
-    console.log(`PRECISE LOGGING - Exact room name: restaurant_${restaurantId}`);
+    // console.log(`PRECISE LOGGING - Registering restaurant: ${restaurantId}`);
+    // console.log(`PRECISE LOGGING - Exact room name: restaurant_${restaurantId}`);
     
     // Trim restaurantId to remove any potential whitespace
     const cleanRestaurantId = String(restaurantId).trim();
@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
     
     // Verify room joined
     const rooms = Array.from(socket.rooms);
-    console.log('PRECISE LOGGING - Rooms socket is in:', rooms);
+    // console.log('PRECISE LOGGING - Rooms socket is in:', rooms);
   });
 });
 
@@ -174,7 +174,7 @@ const db = new sqlite3.Database("./database.db", (err) => {
         longitude REAL NOT NULL,
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        category TEXT,
+        category TEXT DEFAULT 'Restaurant',
         description TEXT,
         image TEXT, 
         balance REAL
@@ -470,7 +470,7 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
           restaurants: [],
           error: "Please update your location to see available restaurants",
           clientName: `${client.firstName} ${client.lastName}`,
-          clientBalance: client.balance,
+          clientBalance: client.balance.toFixed(2),
         });
       }
 
@@ -532,7 +532,7 @@ app.get("/client-dashboard", isAuthenticated, (req, res) => {
           // Render the EJS template with the filtered restaurant data
           res.render("client-dashboard", {
             restaurants: availableRestaurants,
-            clientBalance: client.balance,
+            clientBalance: client.balance.toFixed(2),
             clientName: `${client.firstName} ${client.lastName}`,
           });
         }
@@ -587,7 +587,7 @@ app.get("/restaurant-profile/:id", isAuthenticated, (req, res) => {
       }
 
       // At this point, we know we have a client with a balance
-      const clientBalance = client.balance;
+      const clientBalance = client.balance.toFixed(2);
 
       // Fetch restaurant details
       db.get(
@@ -708,65 +708,6 @@ app.get("/restaurant-dashboard", isAuthenticated, (req, res) => {
   );
 });
 
-// Add a route to update restaurant location/details
-app.post("/update-restaurant", isAuthenticated, async (req, res) => {
-  if (req.session.userType !== "restaurant") {
-    return res.status(403).send("Unauthorized");
-  }
-
-  try {
-    const { address, postalCode, city, radius, openingTime, closingTime } =
-      req.body;
-
-    // Get new coordinates from updated address
-    const { latitude, longitude } = await getCoordinatesFromAddress(
-      address,
-      city,
-      postalCode
-    );
-
-    const query = `
-      UPDATE restaurants 
-      SET address = ?,
-          postalCode = ?,
-          city = ?,
-          radius = ?,
-          openingTime = ?,
-          closingTime = ?,
-          latitude = ?,
-          longitude = ?
-      WHERE id = ?
-    `;
-
-    db.run(
-      query,
-      [
-        address,
-        postalCode,
-        city,
-        radius,
-        openingTime,
-        closingTime,
-        latitude,
-        longitude,
-        req.session.userId,
-      ],
-      (err) => {
-        if (err) {
-          console.error("Error updating restaurant:", err);
-          return res
-            .status(500)
-            .json({ error: "Failed to update restaurant details" });
-        }
-        res.json({ success: true });
-      }
-    );
-  } catch (error) {
-    console.error("Error updating restaurant location:", error);
-    res.status(500).json({ error: "Could not process restaurant location" });
-  }
-});
-
 // Menu item tab in Restaurant dashboard routes
 app.post("/add-item", isAuthenticated, upload.single("image"), (req, res) => {
   const { itemName, itemPrice, category, description } = req.body;
@@ -791,11 +732,7 @@ app.post("/add-item", isAuthenticated, upload.single("image"), (req, res) => {
   );
 });
 
-app.post(
-  "/update-item/:id",
-  isAuthenticated,
-  upload.single("editImage"),
-  (req, res) => {
+app.post("/update-item/:id", isAuthenticated, upload.single("editImage"),  (req, res) => {
     const itemId = req.params.id;
     const { editItemName, editItemPrice, editCategory, editDescription } =
       req.body;
@@ -856,7 +793,7 @@ app.post("/delete-menu", isAuthenticated, (req, res) => {
 
 app.post("/saveCart", isAuthenticated, async (req, res) => {
   try {
-    const { items, note, restaurantId, totalPrice } = req.body;
+    let { items, note, restaurantId, totalPrice } = req.body;
     const userId = req.session.userId;
 
     if (!items || items.length === 0) {
@@ -865,12 +802,14 @@ app.post("/saveCart", isAuthenticated, async (req, res) => {
         .json({ success: false, message: "Cart is empty." });
     }
 
+    totalPrice = parseFloat(totalPrice).toFixed(2);
+
     const formattedItems = items
       .map((item) => `(${item.count}x ${item.name} | ${item.price} €)`)
       .join("\r\n");
 
     db.get(
-      "SELECT balance FROM clients WHERE id = ?",
+      "SELECT * FROM clients WHERE id = ?",
       [userId],
       (err, client) => {
         if (err) {
@@ -957,7 +896,7 @@ app.post("/saveCart", isAuthenticated, async (req, res) => {
         
               // Broadcast to the specific restaurant room
               io.to(`restaurant_${restaurantId.toString().trim()}`).emit('newOrder', orderDetails);
-              console.log('newOrder event emitted to:', `restaurant_${restaurantId}`, orderDetails);
+              // console.log('newOrder event emitted to:', `restaurant_${restaurantId}`, orderDetails);
 
         
               res.json({ success: true, message: "Order placed successfully!" });
@@ -998,7 +937,7 @@ app.post("/confirmOrder", isAuthenticated, (req, res) => {
   const { orderId } = req.body;
 
   db.get(
-    "SELECT total_price, restaurant_id FROM orders WHERE id = ?",
+    "SELECT * FROM orders WHERE id = ?",
     [orderId],
     (err, order) => {
       if (err || !order) {
@@ -1009,9 +948,9 @@ app.post("/confirmOrder", isAuthenticated, (req, res) => {
             success: false,
             message: "An error occurred while fetching the order.",
           });
-      }
+      } 
 
-      const restaurantShare = Math.round(order.total_price * 0.85 * 100) / 100;
+      const restaurantShare = parseFloat((order.total_price * 0.85).toFixed(2));
 
       db.serialize(() => {
         // Deduct 85% from LieferspatzBalance
@@ -1081,7 +1020,7 @@ app.post("/refuseOrder", isAuthenticated, (req, res) => {
   const { orderId } = req.body;
 
   db.get(
-    "SELECT total_price, client_id FROM orders WHERE id = ?",
+    "SELECT * FROM orders WHERE id = ?",
     [orderId],
     (err, order) => {
       if (err || !order) {
@@ -1098,7 +1037,7 @@ app.post("/refuseOrder", isAuthenticated, (req, res) => {
         // Refund the total price to the client
         db.run(
           "UPDATE clients SET balance = balance + ? WHERE id = ?",
-          [order.total_price, order.client_id],
+          [order.total_price.toFixed(2), order.client_id],
           (err) => {
             if (err) {
               console.error("Error updating client balance:", err);
